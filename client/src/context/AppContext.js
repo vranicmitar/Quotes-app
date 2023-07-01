@@ -3,11 +3,11 @@ import React, { createContext, useState } from "react";
 const AppContext = createContext();
 
 function ContextProvider({ children }) {
-  const [token, setToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
 
   const values = {
-    token,
-    setToken,
+    accessToken,
+    setAccessToken,
   };
 
   return (

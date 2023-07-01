@@ -1,36 +1,44 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
+import { Alert } from "@mui/material";
 
 export default function Login() {
-  const navigation = useNavigate();
-  const { setToken } = useContext(AppContext);
+  const navigate = useNavigate();
+  const { setAccessToken } = useContext(AppContext);
+  const [userData, setUserData] = useState({ username: "", password: "" });
+  const [invalidCredentials, setInvalidCredentials] = useState(false);
 
-  async function loginUser(data) {
-    try {
-      const user = await axios.post(`http://localhost:8000/sessions`, data);
-      const userInfo = await user.data;
-      console.log(userInfo);
-      localStorage.setItem("token", userInfo.token);
-      setToken(userInfo.token);
-      navigation("/");
-    } catch (err) {
-      console.log(err.response.data.err);
-      localStorage.removeItem("token");
-      setToken(null);
-    }
-  }
-  function handleClick(e) {
-    e.preventDefault();
-    loginUser({
-      user,
-      password,
-    });
-  }
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
+  const handleLogin = (event) => {
+    event.preventDefault();
+    axios
+      .post("http://localhost:8000/sessions", {
+        username: userData.username,
+        password: userData.password,
+      })
+      .then((response) => {
+        // console.log(response.data.accessToken);
+        setInvalidCredentials(false);
+        setAccessToken(response.data.accessToken);
+        localStorage.setItem("accessToken", response.data.accessToken);
+        navigate("/quotes");
+        window.scrollTo(0, 0);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setInvalidCredentials(true);
+          setAccessToken(null);
+          localStorage.removeItem("accessToken");
+        } else {
+          console.log(error);
+          setInvalidCredentials(true);
+          setAccessToken(null);
+          localStorage.removeItem("accessToken");
+        }
+      });
+  };
   return (
     <div
       style={{ marginLeft: "35%" }}
@@ -40,7 +48,14 @@ export default function Login() {
         Login To Your Account
       </div>
       <div class="mt-8">
-        <form action="#" autoComplete="off">
+        <form action="#" autoComplete="off" onSubmit={handleLogin}>
+          {invalidCredentials ? (
+            <Alert radius="md" title="Invalid credentials!" color="red">
+              Invalid username or password
+            </Alert>
+          ) : (
+            <></>
+          )}
           <div class="flex flex-col mb-2">
             <div class="flex relative ">
               <span class="rounded-l-md inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 shadow-sm text-sm">
@@ -51,10 +66,13 @@ export default function Login() {
                 type="text"
                 class=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                 placeholder="Username"
-                value={user}
-                onChange={(e) => {
-                  setUser(e.target.value);
-                }}
+                value={userData.username}
+                onChange={(event) =>
+                  setUserData((prev) => ({
+                    ...prev,
+                    username: event.target.value,
+                  }))
+                }
                 required
               />
             </div>
@@ -76,10 +94,13 @@ export default function Login() {
                 type="password"
                 class=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                 placeholder="Password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
+                value={userData.password}
+                onChange={(event) =>
+                  setUserData((prev) => ({
+                    ...prev,
+                    password: event.target.value,
+                  }))
+                }
                 required
               />
             </div>
@@ -89,7 +110,6 @@ export default function Login() {
             <button
               type="submit"
               class="py-2 px-4  bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 focus:ring-offset-purple-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
-              onClick={handleClick}
             >
               Login
             </button>
