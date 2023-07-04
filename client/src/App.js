@@ -8,20 +8,23 @@ import Login from "./pages/Login/Login";
 import { AppContext } from "./context/AppContext";
 
 export default function App() {
-  const { accessToken, setAccessToken } = useContext(AppContext);
+  const { token, setToken } = useContext(AppContext);
   useEffect(() => {
-    const localToken = localStorage.getItem("accessToken");
-    setAccessToken(localToken);
+    const localToken = localStorage.getItem("token");
+    setToken(localToken);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
       <Navbar />
       <Routes>
-        <Route
-          path="/"
-          element={accessToken ? <HomePage /> : <Login />}
-        ></Route>
+        <Route path="/" element={token ? <HomePage /> : <Login />}></Route>
+
+        {/* {token ? (
+          <Route path="/homepage" element={<HomePage />}></Route>
+        ) : (
+          <Route path="/" element={<Login />}></Route>
+        )} */}
         <Route path="/quotes" element={<Quotes />}></Route>
       </Routes>
     </>

@@ -5,8 +5,8 @@ import { AppContext } from "../../context/AppContext";
 
 export default function Navbar() {
   const navigation = useNavigate();
-  const { accessToken, setAccessToken } = useContext(AppContext);
-  useEffect(() => {}, [accessToken]);
+  const { token, setToken } = useContext(AppContext);
+  useEffect(() => {}, [token]);
   return (
     <header className="bg-yellow-100 h-20 flex justify-between items-center">
       <NavLink to={"/"}>
@@ -16,7 +16,7 @@ export default function Navbar() {
         <NavLink to={"/quotes"}>
           <h1 className="text-red-700 text-lg font-medium">Quotes</h1>
         </NavLink>
-        <NavLink to={"/login"}>
+        <NavLink to={"/"}>
           <h1 className="text-red-700 text-lg font-medium">Login</h1>
         </NavLink>
         <Button
@@ -24,9 +24,9 @@ export default function Navbar() {
           color="success"
           style={{ fontSize: "0.75rem" }}
           onClick={() => {
-            localStorage.clear("accessToken");
-            setAccessToken(null);
-            navigation("/login");
+            localStorage.clear("token");
+            setToken(null);
+            navigation("/");
           }}
         >
           Log Out

@@ -3,40 +3,31 @@ import { AppContext } from "../../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
-import { Alert } from "@mui/material";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { setAccessToken } = useContext(AppContext);
-  const [userData, setUserData] = useState({ username: "", password: "" });
-  const [invalidCredentials, setInvalidCredentials] = useState(false);
+  const { setToken } = useContext(AppContext);
+  const [user, setUser] = useState({ username: "", password: "" });
+  const [message, setMessage] = useState(false);
 
   const handleLogin = (event) => {
     event.preventDefault();
     axios
       .post("http://localhost:8000/sessions", {
-        username: userData.username,
-        password: userData.password,
+        username: user.username,
+        password: user.password,
       })
       .then((response) => {
-        // console.log(response.data.accessToken);
-        setInvalidCredentials(false);
-        setAccessToken(response.data.accessToken);
-        localStorage.setItem("accessToken", response.data.accessToken);
+        setMessage(false);
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
         navigate("/quotes");
         window.scrollTo(0, 0);
       })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          setInvalidCredentials(true);
-          setAccessToken(null);
-          localStorage.removeItem("accessToken");
-        } else {
-          console.log(error);
-          setInvalidCredentials(true);
-          setAccessToken(null);
-          localStorage.removeItem("accessToken");
-        }
+      .catch((err) => {
+        localStorage.clear("accessToken");
+        setToken(null);
+        setMessage(err.response.event.err);
       });
   };
   return (
@@ -49,13 +40,7 @@ export default function Login() {
       </div>
       <div class="mt-8">
         <form action="#" autoComplete="off" onSubmit={handleLogin}>
-          {invalidCredentials ? (
-            <Alert radius="md" title="Invalid credentials!" color="red">
-              Invalid username or password
-            </Alert>
-          ) : (
-            <></>
-          )}
+          {message ? <p>{message}</p> : <></>}
           <div class="flex flex-col mb-2">
             <div class="flex relative ">
               <span class="rounded-l-md inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 shadow-sm text-sm">
@@ -66,9 +51,9 @@ export default function Login() {
                 type="text"
                 class=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                 placeholder="Username"
-                value={userData.username}
+                value={user.username}
                 onChange={(event) =>
-                  setUserData((prev) => ({
+                  setUser((prev) => ({
                     ...prev,
                     username: event.target.value,
                   }))
@@ -94,9 +79,9 @@ export default function Login() {
                 type="password"
                 class=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                 placeholder="Password"
-                value={userData.password}
+                value={user.password}
                 onChange={(event) =>
-                  setUserData((prev) => ({
+                  setUser((prev) => ({
                     ...prev,
                     password: event.target.value,
                   }))
