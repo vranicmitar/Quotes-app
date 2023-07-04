@@ -1,6 +1,7 @@
 import React from "react";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+
 export default function QuoteCard({
   id,
   content,
@@ -8,6 +9,9 @@ export default function QuoteCard({
   upvotesCount,
   downvotesCount,
 }) {
+  const percent = Math.round(
+    (upvotesCount / (upvotesCount + downvotesCount)) * 100
+  );
   return (
     <>
       <section>
@@ -30,11 +34,15 @@ export default function QuoteCard({
                   </span>
                 </div>
                 <p className="text-center">
-                  <KeyboardArrowUpIcon />
-                  <br></br>
+                  <ArrowDropUpIcon
+                    style={{ fontSize: "45px", color: "grey" }}
+                  />
+                  <p className="text-lg font-bold">{percent}%</p>
                   {upvotesCount} / {downvotesCount}
                   <br></br>
-                  <KeyboardArrowDownIcon />
+                  <ArrowDropDownIcon
+                    style={{ fontSize: "45px", color: "grey" }}
+                  />
                 </p>
               </div>
             </div>
