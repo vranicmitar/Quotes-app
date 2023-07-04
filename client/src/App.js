@@ -2,10 +2,11 @@ import React, { useContext, useEffect } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import { Route, Routes } from "react-router-dom";
-import Quotes from "./components/Quotes/Quotes";
 import HomePage from "./components/HomePage/HomePage";
 import Login from "./pages/Login/Login";
 import { AppContext } from "./context/AppContext";
+import QuoteCard from "./components/QuoteCard/QuoteCard";
+import Quotes from "./pages/Quotes/Quotes";
 
 export default function App() {
   const { token, setToken } = useContext(AppContext);

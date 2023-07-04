@@ -8,10 +8,10 @@ export default function Login() {
   const navigate = useNavigate();
   const { setToken } = useContext(AppContext);
   const [user, setUser] = useState({ username: "", password: "" });
-  const [message, setMessage] = useState(false);
+  const [message, setMessage] = useState([]);
 
-  const handleLogin = (event) => {
-    event.preventDefault();
+  const handleLogin = (data) => {
+    data.preventDefault();
     axios
       .post("http://localhost:8000/sessions", {
         username: user.username,
@@ -27,7 +27,7 @@ export default function Login() {
       .catch((err) => {
         localStorage.clear("accessToken");
         setToken(null);
-        setMessage(err.response.event.err);
+        setMessage(err.response.data.err);
       });
   };
   return (
