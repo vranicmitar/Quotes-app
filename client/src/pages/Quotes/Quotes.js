@@ -5,36 +5,24 @@ import axios from "axios";
 export default function Quotes() {
   const [quotes, setQuotes] = useState([]);
 
-  const fetchData = async () => {
-    const options = {
-      method: "GET",
-      url: "http://localhost:8000/quotes",
-    };
-
-    try {
-      const response = await axios.request(options);
-      setQuotes(response.data.quotes);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
   useEffect(() => {
-    fetchData();
     axios
-      .get(`http://localhost:8000/quotes`, {
-        headers: {
-          Authorization: "Bearer" + localStorage.getItem("token"),
-        },
+      .get("http://localhost:8000/quotes", {
+        headers: { Authorization: "Bearer " + accessToken },
       })
-      .then((response) => {
-        setQuotes(response.data.quotes);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
-
+      .then((res) => setQuotes(res.data.quotes))
+      .catch((err) => console.log(err));
+  }, [quotes]);
+  // const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:8000/quotes", {
+  //       headers: { Authorization: "Bearer " + accessToken },
+  //     })
+  //     .then((res) => console.log(res))
+  //     .catch((err) => console.log);
+  // }, []);
   return (
     <>
       {quotes.map((quote) => (
@@ -42,6 +30,8 @@ export default function Quotes() {
           key={quote.id}
           content={quote.content}
           authorName={quote.author}
+          upvotesCount={quote.upvotesCount}
+          downvotesCount={quote.downvotesCount}
         />
       ))}
     </>

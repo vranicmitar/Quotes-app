@@ -22,7 +22,6 @@ export default function Login() {
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
         navigate("/quotes");
-        window.scrollTo(0, 0);
       })
       .catch((err) => {
         localStorage.clear("accessToken");

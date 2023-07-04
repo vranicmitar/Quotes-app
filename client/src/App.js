@@ -5,8 +5,8 @@ import { Route, Routes } from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage";
 import Login from "./pages/Login/Login";
 import { AppContext } from "./context/AppContext";
-import QuoteCard from "./components/QuoteCard/QuoteCard";
 import Quotes from "./pages/Quotes/Quotes";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 export default function App() {
   const { token, setToken } = useContext(AppContext);
@@ -19,14 +19,15 @@ export default function App() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={token ? <HomePage /> : <Login />}></Route>
-
-        {/* {token ? (
-          <Route path="/homepage" element={<HomePage />}></Route>
-        ) : (
-          <Route path="/" element={<Login />}></Route>
-        )} */}
-        <Route path="/quotes" element={<Quotes />}></Route>
+        <Route path="/" element={token ? <Quotes /> : <Login />}></Route>
+        <Route
+          path="/quotes"
+          element={
+            <ProtectedRoute>
+              <Quotes />
+            </ProtectedRoute>
+          }
+        ></Route>
       </Routes>
     </>
   );
