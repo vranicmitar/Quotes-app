@@ -3,6 +3,7 @@ import { AppContext } from "../../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import PersonIcon from "@mui/icons-material/Person";
+import { toast } from "react-hot-toast";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -22,6 +23,17 @@ export default function Login() {
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
         navigate("/quotes");
+        toast.success("You have successfully logged in.", {
+          style: {
+            border: "1px solid #713200",
+            padding: "16px",
+            color: "#713200",
+          },
+          iconTheme: {
+            primary: "#713200",
+            secondary: "#FFFAEE",
+          },
+        });
       })
       .catch((err) => {
         localStorage.clear("accessToken");

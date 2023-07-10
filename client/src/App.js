@@ -2,11 +2,11 @@ import React, { useContext, useEffect } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import { Route, Routes } from "react-router-dom";
-import HomePage from "./components/HomePage/HomePage";
 import Login from "./pages/Login/Login";
 import { AppContext } from "./context/AppContext";
 import Quotes from "./pages/Quotes/Quotes";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   const { token, setToken } = useContext(AppContext);
@@ -17,6 +17,7 @@ export default function App() {
   }, []);
   return (
     <>
+      <Toaster position="bottom-left" reverseOrder={false} />
       <Navbar />
       <Routes>
         <Route path="/" element={token ? <Quotes /> : <Login />}></Route>

@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import "./QuoteCard.css";
 
 export default function QuoteCard({
   id,
@@ -8,10 +11,153 @@ export default function QuoteCard({
   authorName,
   upvotesCount,
   downvotesCount,
+  givenVote,
 }) {
   const percent = Math.round(
     (upvotesCount / (upvotesCount + downvotesCount)) * 100
   );
+
+  const [vote, setVote] = useState(givenVote);
+  const [upVotesCount, setUpVotesCount] = useState(upvotesCount);
+  const [downVotesCount, setDownVotesCount] = useState(downvotesCount);
+
+  const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/quotes", {
+        headers: { Authorization: "Bearer " + accessToken },
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log);
+  }, []);
+
+  let color;
+  let color1;
+  if (vote === "upvote") {
+    color = "lightGreen";
+  } else {
+    color = "lightGrey";
+  }
+
+  if (vote === "downvote") {
+    color1 = "red";
+  } else {
+    color1 = "lightGrey";
+  }
+
+  const style = {
+    color: color,
+  };
+
+  const style1 = {
+    color: color1,
+  };
+
+  const postUpvote = () => {
+    axios
+      .post(`http://localhost:8000/quotes/${id}/upvote`, null, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.givenVote);
+        setUpVotesCount(upVotesCount + 1);
+        setVote(response.data.givenVote);
+        toast("Successfully Votes Up!", {
+          icon: "👍",
+          style: {
+            borderRadius: "0.8rem",
+            backgroundColor: "#4e7768",
+            color: "#f0fffa",
+            boxShadow:
+              "rgba(0, 0, 0, 0.6) 0px 4px 6px -1px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px",
+          },
+        });
+      })
+      .catch((error) => {
+        // console.log(error)
+      });
+  };
+  const deleteUpvote = () => {
+    axios
+      .delete(`http://localhost:8000/quotes/${id}/upvote`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.givenVote);
+        setUpVotesCount(upVotesCount - 1);
+        setVote(response.data.givenVote);
+        toast("Successfully Deleted Vote!", {
+          icon: "✐",
+          style: {
+            borderRadius: "0.8rem",
+            backgroundColor: "#4e7768",
+            color: "#f0fffa",
+            boxShadow:
+              "rgba(0, 0, 0, 0.6) 0px 4px 6px -1px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px",
+          },
+        });
+      })
+      .catch((error) => {
+        // console.log(error);
+      });
+  };
+  const postDownvote = () => {
+    axios
+      .post(`http://localhost:8000/quotes/${id}/downvote`, null, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.givenVote);
+        setDownVotesCount(downVotesCount + 1);
+        setVote(response.data.givenVote);
+        toast("Successfully Votes Down!", {
+          icon: "👎",
+          style: {
+            borderRadius: "0.8rem",
+            backgroundColor: "#4e7768",
+            color: "#f0fffa",
+            boxShadow:
+              "rgba(0, 0, 0, 0.6) 0px 4px 6px -1px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px",
+          },
+        });
+      })
+      .catch((error) => {
+        // console.log(error);
+      });
+  };
+  const deleteDownvote = () => {
+    axios
+      .delete(`http://localhost:8000/quotes/${id}/downvote`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.givenVote);
+        setDownVotesCount(downVotesCount - 1);
+        setVote(response.data.givenVote);
+        toast("Successfully Deleted Vote!", {
+          icon: "✐",
+          style: {
+            borderRadius: "0.8rem",
+            backgroundColor: "#4e7768",
+            color: "#f0fffa",
+            boxShadow:
+              "rgba(0, 0, 0, 0.6) 0px 4px 6px -1px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px",
+          },
+        });
+      })
+      .catch((error) => {
+        // console.log(error);
+      });
+  };
+
   return (
     <>
       <section>
@@ -35,14 +181,32 @@ export default function QuoteCard({
                 </div>
                 <p className="text-center">
                   <ArrowDropUpIcon
-                    style={{ fontSize: "45px", color: "grey" }}
-                  />
+                    sx={{ ...style }}
+                    disabled={vote === "downvote"}
+                    style={{ fontSize: "45px" }}
+                    onClick={() =>
+                      vote === "none"
+                        ? postUpvote()
+                        : vote === "upvote"
+                        ? deleteUpvote()
+                        : () => {}
+                    }
+                  ></ArrowDropUpIcon>
                   <p className="text-lg font-bold">{percent}%</p>
                   {upvotesCount} / {downvotesCount}
                   <br></br>
                   <ArrowDropDownIcon
-                    style={{ fontSize: "45px", color: "grey" }}
-                  />
+                    sx={{ ...style1 }}
+                    disabled={vote === "upvote"}
+                    style={{ fontSize: "45px" }}
+                    onClick={() =>
+                      vote === "none"
+                        ? postDownvote()
+                        : vote === "downvote"
+                        ? deleteDownvote()
+                        : () => {}
+                    }
+                  ></ArrowDropDownIcon>
                 </p>
               </div>
             </div>
