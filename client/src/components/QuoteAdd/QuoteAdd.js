@@ -1,14 +1,53 @@
-import { Button, TextField } from "@mui/material";
+import { Button, FormGroup, TextField } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-export default function QuoteAdd() {
+export default function QuoteAdd({ render }) {
+  const [opened, setOpened] = useState(false);
   const [inputQuote, setInputQuote] = useState({
     content: "",
     author: "",
-    tags: "",
+    tags: [],
   });
+
+  const token = localStorage.getItem("token");
+
+  const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
+  useEffect(() => {
+    axios
+      .post(
+        "http://localhost:8000/quotes",
+        {
+          headers: { Authorization: "Bearer " + accessToken },
+        },
+        {
+          content: inputQuote.content,
+          author: inputQuote.author,
+          tags: inputQuote.tags,
+        }
+      )
+      .then((res) => {
+        render((prev) => !prev);
+        // console.log(response.data);
+        setTimeout(
+          () =>
+            setInputQuote({
+              content: "",
+              author: "",
+              tags: "",
+            }),
+          100
+        );
+        setTimeout(() => setOpened(false), 200);
+      })
+      .catch((err) => console.log(err));
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [render]);
 
   return (
     <div>
@@ -61,7 +100,7 @@ export default function QuoteAdd() {
 
         <br></br>
         <Button type="submit">Add Quote</Button>
-      </form>
+      </form> 
     </div>
   );
 }

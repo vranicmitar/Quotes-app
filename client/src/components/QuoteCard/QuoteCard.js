@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import axios from "axios";
-import { toast } from "react-hot-toast";
 import "./QuoteCard.css";
 
 export default function QuoteCard({
@@ -17,29 +16,47 @@ export default function QuoteCard({
     (upvotesCount / (upvotesCount + downvotesCount)) * 100
   );
 
-  const [vote, setVote] = useState(givenVote);
-  const [upVotesCount, setUpVotesCount] = useState(upvotesCount);
-  const [downVotesCount, setDownVotesCount] = useState(downvotesCount);
+  function upVoteForPost(id, action, method) {
+    const token = localStorage.getItem("token");
 
-  const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
-  useEffect(() => {
-    axios
-      .get("http://localhost:8000/quotes", {
-        headers: { Authorization: "Bearer " + accessToken },
+    axios({
+      method: method,
+      url: `http://localhost:8000/quotes/${id}/${action}`,
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((res) => {
+        console.log(res);
       })
-      .then((res) => console.log(res))
-      .catch((err) => console.log);
-  }, []);
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  function upvotePostOrDelete() {
+    if (givenVote === "none") {
+      upVoteForPost(id, "upvote", "post");
+    } else if (givenVote === "downvote") {
+      upVoteForPost(id, "downvote", "delete");
+    }
+  }
+  function downvotePostOrDelete() {
+    if (givenVote === "none") {
+      upVoteForPost(id, "downvote", "post");
+    } else if (givenVote === "upvote") {
+      upVoteForPost(id, "upvote", "delete");
+    }
+  }
 
   let color;
   let color1;
-  if (vote === "upvote") {
+  if (givenVote === "upvote") {
     color = "lightGreen";
   } else {
     color = "lightGrey";
   }
 
-  if (vote === "downvote") {
+  if (givenVote === "downvote") {
     color1 = "red";
   } else {
     color1 = "lightGrey";
@@ -51,111 +68,6 @@ export default function QuoteCard({
 
   const style1 = {
     color: color1,
-  };
-
-  const postUpvote = () => {
-    axios
-      .post(`http://localhost:8000/quotes/${id}/upvote`, null, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        },
-      })
-      .then((response) => {
-        // console.log(response.data.givenVote);
-        setUpVotesCount(upVotesCount + 1);
-        setVote(response.data.givenVote);
-        toast("Successfully Votes Up!", {
-          icon: "👍",
-          style: {
-            borderRadius: "0.8rem",
-            backgroundColor: "#4e7768",
-            color: "#f0fffa",
-            boxShadow:
-              "rgba(0, 0, 0, 0.6) 0px 4px 6px -1px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px",
-          },
-        });
-      })
-      .catch((error) => {
-        // console.log(error)
-      });
-  };
-  const deleteUpvote = () => {
-    axios
-      .delete(`http://localhost:8000/quotes/${id}/upvote`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        },
-      })
-      .then((response) => {
-        // console.log(response.data.givenVote);
-        setUpVotesCount(upVotesCount - 1);
-        setVote(response.data.givenVote);
-        toast("Successfully Deleted Vote!", {
-          icon: "✐",
-          style: {
-            borderRadius: "0.8rem",
-            backgroundColor: "#4e7768",
-            color: "#f0fffa",
-            boxShadow:
-              "rgba(0, 0, 0, 0.6) 0px 4px 6px -1px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px",
-          },
-        });
-      })
-      .catch((error) => {
-        // console.log(error);
-      });
-  };
-  const postDownvote = () => {
-    axios
-      .post(`http://localhost:8000/quotes/${id}/downvote`, null, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        },
-      })
-      .then((response) => {
-        // console.log(response.data.givenVote);
-        setDownVotesCount(downVotesCount + 1);
-        setVote(response.data.givenVote);
-        toast("Successfully Votes Down!", {
-          icon: "👎",
-          style: {
-            borderRadius: "0.8rem",
-            backgroundColor: "#4e7768",
-            color: "#f0fffa",
-            boxShadow:
-              "rgba(0, 0, 0, 0.6) 0px 4px 6px -1px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px",
-          },
-        });
-      })
-      .catch((error) => {
-        // console.log(error);
-      });
-  };
-  const deleteDownvote = () => {
-    axios
-      .delete(`http://localhost:8000/quotes/${id}/downvote`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("accessToken"),
-        },
-      })
-      .then((response) => {
-        // console.log(response.data.givenVote);
-        setDownVotesCount(downVotesCount - 1);
-        setVote(response.data.givenVote);
-        toast("Successfully Deleted Vote!", {
-          icon: "✐",
-          style: {
-            borderRadius: "0.8rem",
-            backgroundColor: "#4e7768",
-            color: "#f0fffa",
-            boxShadow:
-              "rgba(0, 0, 0, 0.6) 0px 4px 6px -1px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px",
-          },
-        });
-      })
-      .catch((error) => {
-        // console.log(error);
-      });
   };
 
   return (
@@ -182,30 +94,20 @@ export default function QuoteCard({
                 <p className="text-center">
                   <ArrowDropUpIcon
                     sx={{ ...style }}
-                    disabled={vote === "downvote"}
                     style={{ fontSize: "45px" }}
-                    onClick={() =>
-                      vote === "none"
-                        ? postUpvote()
-                        : vote === "upvote"
-                        ? deleteUpvote()
-                        : () => {}
-                    }
+                    onClick={() => {
+                      upvotePostOrDelete();
+                    }}
                   ></ArrowDropUpIcon>
                   <p className="text-lg font-bold">{percent}%</p>
                   {upvotesCount} / {downvotesCount}
                   <br></br>
                   <ArrowDropDownIcon
                     sx={{ ...style1 }}
-                    disabled={vote === "upvote"}
                     style={{ fontSize: "45px" }}
-                    onClick={() =>
-                      vote === "none"
-                        ? postDownvote()
-                        : vote === "downvote"
-                        ? deleteDownvote()
-                        : () => {}
-                    }
+                    onClick={() => {
+                      downvotePostOrDelete();
+                    }}
                   ></ArrowDropDownIcon>
                 </p>
               </div>

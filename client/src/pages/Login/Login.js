@@ -21,7 +21,7 @@ export default function Login() {
       .then((response) => {
         setMessage(false);
         setToken(response.data.token);
-        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("token", response.data.accessToken);
         navigate("/quotes");
         toast.success("You have successfully logged in.", {
           style: {
@@ -36,9 +36,10 @@ export default function Login() {
         });
       })
       .catch((err) => {
-        localStorage.clear("accessToken");
+        localStorage.clear("token");
         setToken(null);
-        setMessage(err.response.data.err);
+        setMessage("Username or password are incorrect");
+        setUser({ username: "", password: "" });
       });
   };
   return (
