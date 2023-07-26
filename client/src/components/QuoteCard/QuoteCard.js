@@ -3,6 +3,7 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import axios from "axios";
 import "./QuoteCard.css";
+import { toast } from "react-hot-toast";
 
 export default function QuoteCard({
   id,
@@ -36,15 +37,35 @@ export default function QuoteCard({
   function upvotePostOrDelete() {
     if (givenVote === "none") {
       upVoteForPost(id, "upvote", "post");
+      toast("You vote!", {
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
     } else if (givenVote === "downvote") {
       upVoteForPost(id, "downvote", "delete");
+    } else {
+      toast.error("You can only vote once!");
     }
   }
   function downvotePostOrDelete() {
     if (givenVote === "none") {
       upVoteForPost(id, "downvote", "post");
+      toast("You vote!", {
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
     } else if (givenVote === "upvote") {
       upVoteForPost(id, "upvote", "delete");
+    } else {
+      toast.error("You can only vote once!");
     }
   }
 

@@ -10,22 +10,35 @@ export default function Navbar() {
   return (
     <header className="bg-yellow-100 h-20 flex justify-between items-center">
       <NavLink>
-        <h1 className="text-3xl ml-6">GoodReads</h1>
+        <h1 className="text-3xl ml-6">Quotes</h1>
       </NavLink>
       <nav className="w-1/6  flex justify-around  items-center">
         {token && (
-          <Button
-            variant="contained"
-            color="success"
-            style={{ fontSize: "0.75rem" }}
-            onClick={() => {
-              localStorage.clear("token");
-              setToken(null);
-              navigation("/");
-            }}
-          >
-            Log Out
-          </Button>
+          <>
+            <Button
+              variant="contained"
+              style={{ fontSize: "0.75rem" }}
+              onClick={() => {
+                localStorage.clear("token");
+                setToken(null);
+                navigation("/");
+              }}
+            >
+              add qoute
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              style={{ fontSize: "0.75rem" }}
+              onClick={() => {
+                localStorage.clear("token");
+                setToken(null);
+                navigation("/");
+              }}
+            >
+              Log Out
+            </Button>
+          </>
         )}
       </nav>
     </header>
