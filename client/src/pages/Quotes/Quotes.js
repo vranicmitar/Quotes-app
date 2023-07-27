@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import QuoteCard from "../../components/QuoteCard/QuoteCard";
 import axios from "axios";
-import { Box, Button, Modal, Pagination } from "@mui/material";
+import { Box, Button, Modal, OutlinedInput, Pagination } from "@mui/material";
 import QuoteAdd from "../../components/QuoteAdd/QuoteAdd";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 const style = {
   position: "absolute",
@@ -32,6 +36,11 @@ export default function Quotes() {
   const numOfPages = Math.ceil(
     quotes.filter((quote) => quote.length / quotesPerPage)
   );
+  const [sortDirection, setSortDirection] = React.useState("");
+
+  const handleChangee = (event) => {
+    setSortDirection(event.target.value);
+  };
 
   const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
   useEffect(() => {
@@ -54,6 +63,39 @@ export default function Quotes() {
   // }, []);
   return (
     <>
+      <Box sx={{ width: 200, marginTop: 5, marginLeft: 15 }}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Sort Direction</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={sortDirection}
+            label="Age"
+            onChange={handleChangee}
+            input={<OutlinedInput label="Sort Direction" />}
+          >
+            <MenuItem value={10}>Asc</MenuItem>
+            <MenuItem value={20}>Desc</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      <Box sx={{ width: 200, marginLeft: 50, marginTop: -7 }}>
+        <FormControl fullWidth>
+          <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={sortDirection}
+            label="Age"
+            onChange={handleChangee}
+            input={<OutlinedInput label="Sort By" />}
+          >
+            <MenuItem value={10}>Created At</MenuItem>
+            <MenuItem value={20}>Author</MenuItem>
+            <MenuItem value={30}>Up votes count</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
       {quotes
         .map((quote) => (
           <QuoteCard

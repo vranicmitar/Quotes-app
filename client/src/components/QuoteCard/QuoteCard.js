@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import axios from "axios";
-import "./QuoteCard.css";
 import { toast } from "react-hot-toast";
 
 export default function QuoteCard({
