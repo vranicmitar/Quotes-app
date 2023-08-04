@@ -11,8 +11,7 @@ export default function Navbar() {
   return (
     <header className="bg-yellow-100 h-20 flex justify-between items-center">
       <NavLink>
-        <h1>gg</h1>
-        <Typical loop={Infinity} wrapper="b" steps={["wow"]} />
+        <h1 className="text-2xl ml-4">Quotes</h1>
       </NavLink>
       <nav className="w-1/6  flex justify-around  items-center">
         {token && (
