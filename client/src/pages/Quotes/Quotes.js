@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import QuoteCard from "../../components/QuoteCard/QuoteCard";
 import axios from "axios";
 import { Box, Button, Modal, OutlinedInput, Pagination } from "@mui/material";
@@ -22,7 +22,7 @@ const style = {
 };
 
 export default function Quotes() {
-  const [addQuote, setAddQuote] = useState(false);
+  // const [addQuote, setAddQuote] = useState(false);
   const [quotes, setQuotes] = useState([]);
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
@@ -36,11 +36,10 @@ export default function Quotes() {
   const numOfPages = Math.ceil(
     quotes.filter((quote) => quote.length / quotesPerPage)
   );
-  const [sortDirection, setSortDirection] = React.useState("");
 
-  const handleChangee = (event) => {
-    setSortDirection(event.target.value);
-  };
+  // const handleChangee = (event) => {
+  //   setSortDirection(event.target.value);
+  // };
 
   const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
   useEffect(() => {
@@ -51,7 +50,7 @@ export default function Quotes() {
       .then((res) => setQuotes(res.data.quotes))
       .catch((err) => console.log(err));
     // eslint-disable-next-line
-  }, [quotes, addQuote]);
+  }, [quotes]);
   // const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
   // useEffect(() => {
   //   axios
@@ -69,9 +68,9 @@ export default function Quotes() {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={sortDirection}
+            value
             label="Age"
-            onChange={handleChangee}
+            onChange
             input={<OutlinedInput label="Sort Direction" />}
           >
             <MenuItem value={10}>Asc</MenuItem>
@@ -85,9 +84,9 @@ export default function Quotes() {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={sortDirection}
+            value
             label="Age"
-            onChange={handleChangee}
+            onChange
             input={<OutlinedInput label="Sort By" />}
           >
             <MenuItem value={10}>Created At</MenuItem>
@@ -124,7 +123,7 @@ export default function Quotes() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <QuoteAdd render={setAddQuote} />
+            <QuoteAdd />
           </Box>
         </Modal>
       </div>

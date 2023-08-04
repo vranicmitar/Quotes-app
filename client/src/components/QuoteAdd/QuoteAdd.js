@@ -1,58 +1,71 @@
 import { Button, FormGroup, TextField } from "@mui/material";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { AppContext } from "../../context/AppContext";
 
 export default function QuoteAdd({ render }) {
   const [opened, setOpened] = useState(false);
+  const { setAllQuotes } = useContext(AppContext);
   const [inputQuote, setInputQuote] = useState({
     content: "",
     author: "",
     tags: [],
   });
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
   const accessToken = "yuim98oq-e275-45a2-bc2e-b3098036d655";
-  useEffect(() => {
-    axios
-      .post(
+  // useEffect(() => {
+  //   axios
+  //     .post(
+  //       "http://localhost:8000/quotes",
+  //       {
+  //         headers: { Authorization: "Bearer " + accessToken },
+  //       },
+  //       {
+  //         content: inputQuote.content,
+  //         author: inputQuote.author,
+  //         tags: inputQuote.tags,
+  //       }
+  //     )
+  //     .catch((err) => console.log(err));
+  //   // eslint-disable-next-line
+  // }, []);
+
+  // useEffect(() => {
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [render]);
+  const quoteAdd = async (input) => {
+    try {
+      const response = await axios.post(
         "http://localhost:8000/quotes",
         {
-          headers: { Authorization: "Bearer " + accessToken },
+          content: input.quoteText,
+          author: input.author,
+          tags: input.tags,
         },
         {
-          content: inputQuote.content,
-          author: inputQuote.author,
-          tags: inputQuote.tags,
+          headers: { Authorization: "Bearer " + accessToken },
         }
-      )
-      .then((res) => {
-        render((prev) => !prev);
-        // console.log(response.data);
-        setTimeout(
-          () =>
-            setInputQuote({
-              content: "",
-              author: "",
-              tags: "",
-            }),
-          100
-        );
-        setTimeout(() => setOpened(false), 200);
-      })
-      .catch((err) => console.log(err));
-    // eslint-disable-next-line
-  }, []);
+      );
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [render]);
+      const info = response.data;
 
+      console.log(info);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    quoteAdd();
+  };
   return (
     <div>
       <h1 className="text-center text-3xl">Add Quote</h1>
-      <form className="form">
+      <form className="form" onSubmit={handleSubmit}>
         <TextField
           value={inputQuote.content}
           onChange={(event) =>
@@ -99,8 +112,10 @@ export default function QuoteAdd({ render }) {
         <br></br>
 
         <br></br>
-        <Button type="submit">Add Quote</Button>
-      </form> 
+        <Button type="submit" onClick={handleSubmit}>
+          Add Quote
+        </Button>
+      </form>
     </div>
   );
 }

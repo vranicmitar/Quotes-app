@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,6 @@ export default function Login() {
   const [message, setMessage] = useState([]);
 
   const handleLogin = (data) => {
-    data.preventDefault();
     axios
       .post("http://localhost:8000/sessions", {
         username: user.username,
@@ -42,6 +41,7 @@ export default function Login() {
         setUser({ username: "", password: "" });
       });
   };
+
   return (
     <div
       style={{ marginLeft: "35%" }}
@@ -52,7 +52,7 @@ export default function Login() {
       </div>
       <div class="mt-8">
         <form action="#" autoComplete="off" onSubmit={handleLogin}>
-          {message ? <p>{message}</p> : <></>}
+          {message ? <p className="mb-4">{message}</p> : <></>}
           <div class="flex flex-col mb-2">
             <div class="flex relative ">
               <span class="rounded-l-md inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 shadow-sm text-sm">
